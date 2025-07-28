@@ -1,146 +1,385 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="id">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulir Pemesanan - Toko Desain Kreatif</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #42B549;
+            --primary-dark: #3DA442;
+            --secondary-color: #333333;
+            --light-gray: #F3F4F5;
+            --white-color: #FFFFFF;
+            --text-muted: #757575;
+            --dark-footer: #212121;
+            --border-color: #E0E0E0;
+            --error-color: #dc3545;
+            --success-color: #28a745;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Roboto', 'Arial', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--secondary-color);
+            line-height: 1.6;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: var(--white-color);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .navigation {
+            background-color: var(--primary-color);
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid var(--primary-dark);
+        }
+
+        .navigation a {
+            color: var(--white-color);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1rem;
+            transition: text-decoration 0.3s;
+        }
+        
+        .navigation a.active {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .navigation a:not(.active):hover {
+            text-decoration: underline;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        .sidebar {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+        }
+        
+        .sidebar h3 {
+            color: var(--primary-color);
+            font-family: 'Poppins', sans-serif;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 5px;
+        }
+
+        .sidebar ul, .sidebar ol {
+            list-style-position: inside;
+            padding-left: 0;
+        }
+        
+        .sidebar li {
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .sidebar hr {
+            border: 0;
+            border-top: 1px solid var(--border-color);
+            margin: 20px 0;
+        }
+        
+        .content-area {
+            flex: 3;
+            min-width: 300px;
+            padding: 20px;
+            border-left: 10px solid var(--light-gray);
+            border-right: 10px solid var(--light-gray);
+        }
+
+        .content-area h2 {
+            text-align: center;
+            color: var(--primary-color);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .content-area .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        /* Styling Formulir */
+        .order-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .order-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .order-form input[type="text"],
+        .order-form select,
+        .order-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .order-form .checkbox-group label,
+        .order-form .radio-group label {
+            font-weight: normal;
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        .form-buttons {
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .btn-submit {
+            background-color: #FF5722;
+            color: var(--white-color);
+        }
+        
+        .btn-submit:hover {
+            background-color: #e64a19;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background-color: #f0f0f0;
+            color: var(--secondary-color);
+            margin-left: 10px;
+        }
+
+        .btn-reset:hover {
+            background-color: #e0e0e0;
+        }
+        
+        /* Modal untuk Output */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1001; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(-20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .modal-header {
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .close-button {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+        }
+        
+        #output-content {
+            margin-top: 20px;
+            line-height: 1.8;
+        }
+        
+        #output-content p {
+            margin: 5px 0;
+        }
+        
+        #output-content strong {
+            color: var(--secondary-color);
+        }
+
+        .footer {
+            background-color: var(--dark-footer);
+            color: var(--white-color);
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
 </head>
+<body>
 
-<body bgcolor="#F3F4F5"> <table width="100%" border="0" cellpadding="0" cellspacing="0">
-    <tr bgcolor="#42B549"> <td colspan="3" align="center" style="padding: 15px;">
-            <font color="#FFFFFF" face="Arial, sans-serif" size="6"><b>TOKO DESAIN KREATIF</b></font>
-        </td>
-    </tr>
+<div class="wrapper">
+    <header class="header">
+        <h1>TOKO DESAIN KREATIF</h1>
+    </header>
 
-    <tr bgcolor="#42B549"> <td colspan="3" align="center" style="padding: 10px;">
-            <font face="Arial, sans-serif" size="3">
-                <a href="index.html"><font color="#FFFFFF">PRODUK/JASA</font></a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-                <a href="transaksi.html"><font color="#FFFFFF"><b>FORMULIR PEMESANAN</b></font></a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-                <a href="tentang.html"><font color="#FFFFFF">TENTANG KAMI</font></a>
-            </font>
-        </td>
-    </tr>
-    <tr><td colspan="3" height="10" bgcolor="#F3F4F5"></td></tr> <tr>
-        <td width="20%" valign="top" bgcolor="#FFFFFF" style="padding: 15px;">
-            <font face="Arial, sans-serif" color="#333333">
-                <h3><font color="#42B549">Mengapa Memilih Kami?</font></h3>
-                <ul>
-                    <li><font size="2" color="#757575">Desain Eksklusif</font></li>
-                    <li><font size="2" color="#757575">Konsep Modern & Unik</font></li>
-                    <li><font size="2" color="#757575">Harga Kompetitif</font></li>
-                    <li><font size="2" color="#757575">Proses Cepat & Mudah</font></li>
-                </ul>
-                <hr color="#E0E0E0">
-                 <p align="center">
-                    <a href="https://www.tokopedia.com" target="_blank">
-                        <img src="https://p16-assets-sg.tokopedia-static.net/tos-alisg-i-cqp9s0kcd0-sg/assets-tokopedia-lite/v2/zeus/production/e5b8438b.svg" alt="Link Gambar Promosi" border="0" width="140">
-                    </a>
-                    <br>
-                    <font size="2" color="#757575"><i>Kunjungi Partner Kami!</i></font>
-                </p>
-            </font>
-        </td>
+    <nav class="navigation">
+        <a href="index.html">PRODUK/JASA</a>
+        <a href="transaksi.html" class="active">FORMULIR PEMESANAN</a>
+        <a href="tentang.html">TENTANG KAMI</a>
+    </nav>
 
-        <td width="60%" valign="top" bgcolor="#FFFFFF" style="padding: 20px;">
-            <font face="Arial, sans-serif" color="#333333">
-                <h2 align="center"><font color="#42B549">Formulir Pemesanan Jasa Desain</font></h2>
-                <p align="center"><font color="#757575">Silakan isi formulir di bawah ini untuk melakukan pemesanan. Tim kami akan segera menghubungi Anda.</font></p>
-                <hr color="#E0E0E0">
-                
-                <form action="index.html" method="get"> <table width="100%" cellpadding="6" cellspacing="2" border="0">
-                        <tr>
-                            <td width="30%" align="right"><label for="nama"><font face="Arial, sans-serif" color="#333333">Nama Lengkap:</font></label></td>
-                            <td><input type="text" id="nama" name="nama" size="40" style="border: 1px solid #E0E0E0; padding: 5px;"></td>
-                        </tr>
-                        <tr>
-                            <td align="right"><label for="email"><font face="Arial, sans-serif" color="#333333">Alamat Email:</font></label></td>
-                            <td><input type="text" id="email" name="email" size="40" style="border: 1px solid #E0E0E0; padding: 5px;"></td>
-                        </tr>
-                        <tr>
-                            <td align="right"><label for="telepon"><font face="Arial, sans-serif" color="#333333">Nomor Telepon:</font></label></td>
-                            <td><input type="text" id="telepon" name="telepon" size="40" style="border: 1px solid #E0E0E0; padding: 5px;"></td>
-                        </tr>
-                        <tr>
-                            <td align="right" valign="top"><label><font face="Arial, sans-serif" color="#333333">Pilih Layanan:</font></label></td>
-                            <td>
-                                <input type="checkbox" id="logo" name="layanan" value="Desain Logo"> <label for="logo"><font face="Arial, sans-serif" color="#333333" size="2">Desain Logo</font></label><br>
-                                <input type="checkbox" id="brosur" name="layanan" value="Desain Brosur"> <label for="brosur"><font face="Arial, sans-serif" color="#333333" size="2">Desain Brosur/Flyer</font></label><br>
-                                <input type="checkbox" id="mockup" name="layanan" value="Desain Tipografi"> <label for="mockup"><font face="Arial, sans-serif" color="#333333" size="2">Desain Tipografi</font></label><br>
-                                <input type="checkbox" id="lainnya" name="layanan" value="Lainnya"> <label for="lainnya"><font face="Arial, sans-serif" color="#333333" size="2">Lainnya (jelaskan di bawah)</font></label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right"><label for="paket"><font face="Arial, sans-serif" color="#333333">Pilih Paket:</font></label></td>
-                            <td>
-                                <select id="paket" name="paket" style="border: 1px solid #E0E0E0; padding: 5px;">
-                                    <option value="">--Pilih Satu--</option>
-                                    <option value="basic">Paket Basic</option>
-                                    <option value="premium">Paket Premium</option>
-                                    <option value="custom">Paket Custom</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right" valign="top"><label><font face="Arial, sans-serif" color="#333333">Preferensi Gaya:</font></label></td>
-                            <td>
-                                <input type="radio" id="minimalis" name="gaya" value="Minimalis"> <label for="minimalis"><font face="Arial, sans-serif" color="#333333" size="2">Minimalis</font></label><br>
-                                <input type="radio" id="modern" name="gaya" value="Modern"> <label for="modern"><font face="Arial, sans-serif" color="#333333" size="2">Modern</font></label><br>
-                                <input type="radio" id="playful" name="gaya" value="Playful"> <label for="playful"><font face="Arial, sans-serif" color="#333333" size="2">Playful</font></label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right" valign="top"><label for="deskripsi"><font face="Arial, sans-serif" color="#333333">Deskripsi Singkat Kebutuhan:</font></label></td>
-                            <td><textarea id="deskripsi" name="deskripsi" rows="5" cols="38" style="border: 1px solid #E0E0E0; padding: 5px; width: 90%;"></textarea></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td style="padding-top:10px;">
-                                <table border="0" cellpadding="0" cellspacing="0" bgcolor="#FF5722" style="display:inline-block; border-radius: 4px; cursor:pointer;" onclick="document.forms[0].submit();"> <tr>
-                                        <td style="padding: 8px 15px;">
-                                            <font color="#FFFFFF" face="Arial, sans-serif" size="2"><b>Kirim Pemesanan</b></font>
-                                        </td>
-                                    </tr>
-                                </table>
-                                <input type="reset" value="Reset Formulir" style="padding: 7px 10px; margin-left: 10px; border: 1px solid #E0E0E0; background-color: #F5F5F5; cursor:pointer;">
-                                </td>
-                        </tr>
-                         <tr>
-                            <td></td>
-                            <td><font size="1" color="#AAAAAA"><i>*Dengan mengirim, Anda menyetujui syarat & ketentuan kami. (Tombol submit akan mengarahkan ke halaman utama untuk demo ini)</i></font></td>
-                        </tr>
-                    </table>
-                </form>
-            </font>
-        </td>
+    <div class="main-content">
+        <aside class="sidebar">
+            <h3>Mengapa Memilih Kami?</h3>
+            <ul>
+                <li>Desain Eksklusif</li>
+                <li>Konsep Modern & Unik</li>
+                <li>Harga Kompetitif</li>
+                <li>Proses Cepat & Mudah</li>
+            </ul>
+            <hr>
+            <h3>Alur Pemesanan</h3>
+            <ol>
+                <li>Isi Formulir</li>
+                <li>Konsultasi Detail</li>
+                <li>Pembayaran DP</li>
+                <li>Proses Desain</li>
+                <li>Review & Revisi</li>
+                <li>Pelunasan & Serah Terima</li>
+            </ol>
+        </aside>
 
-        <td width="20%" valign="top" bgcolor="#FFFFFF" style="padding: 15px;">
-            <font face="Arial, sans-serif" color="#333333">
-                 <h3><font color="#42B549">Alur Pemesanan</font></h3>
-                <ol>
-                    <li><font size="2" color="#757575">Isi Formulir</font></li>
-                    <li><font size="2" color="#757575">Konsultasi Detail</font></li>
-                    <li><font size="2" color="#757575">Pembayaran DP</font></li>
-                    <li><font size="2" color="#757575">Proses Desain</font></li>
-                    <li><font size="2" color="#757575">Review & Revisi</font></li>
-                    <li><font size="2" color="#757575">Pelunasan & Serah Terima File</font></li>
-                </ol>
-                 <hr color="#E0E0E0">
-                <p align="center"><b><font size="3" color="#42B549">Butuh Bantuan?</font></b><br>
-                <font size="2" color="#757575">Hubungi layanan pelanggan kami jika ada pertanyaan lebih lanjut.</font></p>
-            </font>
-        </td>
-    </tr>
-    <tr><td colspan="3" height="10" bgcolor="#F3F4F5"></td></tr> <tr bgcolor="#212121"> <td colspan="3" align="center" style="padding: 20px;">
-            <font color="#FFFFFF" face="Arial, sans-serif" size="2">
-                <p>&copy; 2025 Toko Desain Kreatif. Hak Cipta Dilindungi.</p>
-                 <marquee behavior="scroll" direction="left" scrollamount="4" width="60%">
-                    <font color="#FFFFFF" face="Arial, sans-serif" size="2">
-                        Selamat datang di Toko Desain Kreatif! Solusi desain terbaik untuk Anda. Website ini dibuat HANYA menggunakan HTML.
-                    </font>
-                </marquee>
-            </font>
-        </td>
-    </tr>
-</table>
+        <main class="content-area">
+            <h2>Formulir Pemesanan Jasa Desain</h2>
+            <p class="subtitle">Silakan isi formulir di bawah ini untuk melakukan pemesanan. Tim kami akan segera menghubungi Anda.</p>
+            <hr>
+            
+            <form id="orderForm" class="order-form">
+                <div class="form-group">
+                    <label for="nama">Nama Lengkap:</label>
+                    <input type="text" id="nama" name="nama" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Alamat Email:</label>
+                    <input type="text" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="telepon">Nomor Telepon:</label>
+                    <input type="text" id="telepon" name="telepon" required>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label>Pilih Layanan:</label>
+                    <input type="checkbox" id="logo" name="layanan" value="Desain Logo"> <label for="logo">Desain Logo</label><br>
+                    <input type="checkbox" id="brosur" name="layanan" value="Desain Brosur"> <label for="brosur">Desain Brosur/Flyer</label><br>
+                    <input type="checkbox" id="mockup" name="layanan" value="Desain Tipografi"> <label for="mockup">Desain Tipografi</label><br>
+                    <input type="checkbox" id="lainnya" name="layanan" value="Lainnya"> <label for="lainnya">Lainnya</label>
+                </div>
+                <div class="form-group">
+                    <label for="paket">Pilih Paket:</label>
+                    <select id="paket" name="paket" required>
+                        <option value="">--Pilih Satu--</option>
+                        <option value="Basic">Paket Basic</option>
+                        <option value="Premium">Paket Premium</option>
+                        <option value="Custom">Paket Custom</option>
+                    </select>
+                </div>
+                <div class="form-group radio-group">
+                    <label>Preferensi Gaya:</label>
+                    <input type="radio" id="minimalis" name="gaya" value="Minimalis" checked> <label for="minimalis">Minimalis</label><br>
+                    <input type="radio" id="modern" name="gaya" value="Modern"> <label for="modern">Modern</label><br>
+                    <input type="radio" id="playful" name="gaya" value="Playful"> <label for="playful">Playful</label>
+                </div>
+                <div class="form-group">
+                    <label for="deskripsi">Deskripsi Singkat Kebutuhan:</label>
+                    <textarea id="deskripsi" name="deskripsi" rows="5"></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-submit">Kirim Pemesanan</button>
+                    <button type="reset" class="btn btn-reset">Reset Formulir</button>
+                </div>
+            </form>
+        </main>
+
+        <aside class="sidebar">
+            <h3>Butuh Bantuan?</h3>
+            <p>Hubungi layanan pelanggan kami jika ada pertanyaan lebih lanjut.</p>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Toko Desain Kreatif. Hak Cipta Dilindungi.</p>
+    </footer>
+</div>
+
+<!-- Modal untuk menampilkan output -->
+<div id="outputModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Detail Pesanan Anda</h2>
+            <span class="close-button">&times;</span>
+        </div>
+        <div id="output-content">
+            <!-- Hasil output akan ditampilkan di sini oleh JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Tautkan file JavaScript eksternal di sini -->
+<script src="form-handler.js"></script>
 
 </body>
 </html>
