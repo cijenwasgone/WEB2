@@ -1,5 +1,23 @@
-
+/**
+ * Menunggu hingga seluruh konten halaman (DOM) selesai dimuat
+ * sebelum menjalankan skrip.
+ */
 document.addEventListener('DOMContentLoaded', function() {
+
+    // Mendefinisikan harga untuk setiap layanan dan paket
+    const prices = {
+        layanan: {
+            'Desain Logo': 500000,
+            'Desain Brosur': 300000,
+            'Desain Tipografi': 75000,
+            'Lainnya': 0 // Harga untuk 'Lainnya' bisa disesuaikan atau memerlukan konsultasi
+        },
+        paket: {
+            'Basic': 100000,
+            'Premium': 250000,
+            'Custom': 0 // Paket custom memerlukan diskusi lebih lanjut
+        }
+    };
 
     // Mendapatkan elemen-elemen penting dari DOM
     const form = document.getElementById('orderForm');
@@ -15,67 +33,75 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /**
      * Menambahkan event listener untuk event 'submit' pada formulir.
-     * Mencegah pengiriman formulir default dan memanggil fungsi untuk menampilkan output.
      */
     form.addEventListener('submit', function(event) {
-        // Mencegah halaman me-refresh saat form disubmit
         event.preventDefault(); 
-        
-        // Memanggil fungsi untuk memvalidasi, memproses, dan menampilkan data
         if (validateAndDisplaySummary()) {
-            // Jika validasi berhasil, tampilkan modal
             modal.style.display = 'block';
         }
     });
 
     /**
-     * Fungsi untuk memvalidasi input, mengumpulkan data, dan menampilkannya.
+     * Fungsi untuk memvalidasi input, menghitung harga, dan menampilkannya.
      * @returns {boolean} - Mengembalikan true jika valid, false jika tidak.
      */
     function validateAndDisplaySummary() {
-        // Hapus pesan error lama jika ada
         const oldError = form.querySelector('.error-message');
         if (oldError) {
             oldError.remove();
         }
 
-        // Mengumpulkan nilai dari setiap input
         const nama = document.getElementById('nama').value.trim();
         const email = document.getElementById('email').value.trim();
         const telepon = document.getElementById('telepon').value.trim();
-        const paket = document.getElementById('paket').value;
+        const paketValue = document.getElementById('paket').value;
 
-        // Validasi input
-        if (!nama || !email || !telepon || !paket) {
-            // Jika ada yang kosong, tampilkan pesan error di atas tombol
+        if (!nama || !email || !telepon || !paketValue) {
             const errorMessage = "Harap isi semua kolom yang wajib diisi (Nama, Email, Telepon, dan Paket).";
             displayError(errorMessage);
-            return false; // Hentikan proses
+            return false;
         }
         
-        // Mengumpulkan layanan yang dipilih (checkboxes)
+        // --- Mulai Kalkulasi Harga ---
+        let totalPrice = 0;
+        
+        // Kalkulasi dari layanan yang dipilih (checkboxes)
         const layananCheckboxes = document.querySelectorAll('input[name="layanan"]:checked');
         let layananTerpilih = [];
         layananCheckboxes.forEach(function(checkbox) {
             layananTerpilih.push(checkbox.value);
+            totalPrice += prices.layanan[checkbox.value] || 0;
         });
         const layananText = layananTerpilih.length > 0 ? layananTerpilih.join(', ') : 'Tidak ada layanan yang dipilih';
 
-        // Mengumpulkan gaya yang dipilih (radio button)
+        // Kalkulasi dari paket yang dipilih
+        totalPrice += prices.paket[paketValue] || 0;
+        
+        // Format harga ke format Rupiah
+        const formattedPrice = new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(totalPrice);
+        // --- Akhir Kalkulasi Harga ---
+
         const gayaRadio = document.querySelector('input[name="gaya"]:checked');
         const gaya = gayaRadio ? gayaRadio.value : 'Tidak ada gaya yang dipilih';
         
         const deskripsi = document.getElementById('deskripsi').value.trim() || 'Tidak ada deskripsi tambahan.';
 
-        // Membuat konten HTML untuk ditampilkan di modal
+        // Membuat konten HTML untuk ditampilkan di modal, termasuk harga
         const summaryHTML = `
             <p><strong>Nama Lengkap:</strong> ${nama}</p>
             <p><strong>Alamat Email:</strong> ${email}</p>
             <p><strong>Nomor Telepon:</strong> ${telepon}</p>
             <hr>
             <p><strong>Layanan yang Dipilih:</strong> ${layananText}</p>
-            <p><strong>Paket:</strong> ${paket}</p>
+            <p><strong>Paket:</strong> ${paketValue}</p>
             <p><strong>Preferensi Gaya:</strong> ${gaya}</p>
+            <hr>
+            <h3 style="text-align:center; margin-bottom: 10px;">Estimasi Biaya: ${formattedPrice}</h3>
+            ${paketValue === 'Custom' || layananTerpilih.includes('Lainnya') ? '<p style="text-align:center; font-size:0.9em; color:#757575;"><i>(Harga untuk item Custom/Lainnya akan dikonfirmasi via konsultasi)</i></p>' : ''}
             <hr>
             <p><strong>Deskripsi Kebutuhan:</strong></p>
             <p>${deskripsi}</p>
@@ -83,7 +109,6 @@ document.addEventListener('DOMContentLoaded', function() {
             <p style="text-align:center; font-style:italic;">Terima kasih telah melakukan pemesanan. Tim kami akan segera menghubungi Anda!</p>
         `;
 
-        // Memasukkan konten HTML ke dalam modal
         outputContent.innerHTML = summaryHTML;
         return true; // Validasi berhasil
     }
@@ -103,22 +128,19 @@ document.addEventListener('DOMContentLoaded', function() {
         errorDiv.style.marginBottom = '1rem';
         errorDiv.textContent = message;
 
-        // Masukkan pesan error sebelum tombol form
         const formButtons = form.querySelector('.form-buttons');
         form.insertBefore(errorDiv, formButtons);
     }
 
     /**
      * Menambahkan event listener ke tombol tutup (X) pada modal.
-     * Saat diklik, modal akan disembunyikan.
      */
     closeButton.addEventListener('click', function() {
         modal.style.display = 'none';
     });
 
     /**
-     * Menambahkan event listener pada area window.
-     * Jika pengguna mengklik di luar area modal, modal akan tertutup.
+     * Menambahkan event listener pada area window agar bisa menutup modal.
      */
     window.addEventListener('click', function(event) {
         if (event.target == modal) {
